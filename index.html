@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
+</head>
+
+<body>
+    <!-- // image ucun<input type="file"> -->
+    <input type="text" id="fromPlace" placeholder="Starting point">
+    <input type="text" id="toPlace" placeholder="toPlace">
+    <input type="text" id="duration" placeholder="Number of Days">
+
+    <button id="btn">Get Response</button>
+    <div id="res"></div>
+    <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+      </script>
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        // Fetch your API_KEY
+        const API_KEY = "AIzaSyDBuTJK86lRXoVL3tH2YcEB4R8qJu4lrJM";
+
+        // Access your API key (see "Set up your API key" above)
+        const genAI = new GoogleGenerativeAI(API_KEY);
+
+        // ...
+
+        async function run() {
+            let fromPlace=document.getElementById('fromPlace').value
+            let toPlace=document.getElementById('toPlace').value
+            let duration=document.getElementById('duration').value
+            let promptMsg=`Create a travel itinerary from ${fromPlace} to ${toPlace} for ${duration} Days`
+            console.log('Gemini is working and processing');
+            // For text-only input, use the gemini-pro model
+            const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+            const prompt = promptMsg
+
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
+
+            var converter = new showdown.Converter(),
+            html= converter.makeHtml(text),
+            md= converter.makeMd('<a href="https://patreon.com/showdownjs">Please Support us!</a>');
+
+            document.getElementById('res').innerHTML=html
+            console.log(text);
+        }
+        document.getElementById('btn').addEventListener('click',run)
+        //run()
+
+        // ...
+    </script>
+</body>
+
+</html>
